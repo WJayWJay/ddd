@@ -24,4 +24,11 @@ $router->group(['middleware' => 'auth', 'prefix' => 'api'], function () use ($ro
     $router->get('users', function () {
         return response('hello world');
     });
+
+    $router->get('info', 'UserController@info');
 });
+
+$router->post('/public/login', 'UserController@login');
+$router->post('/public/register', 'UserController@register');
+
+$router->get('/test', 'UserController@test');
