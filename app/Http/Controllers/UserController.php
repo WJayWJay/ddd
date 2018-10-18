@@ -77,7 +77,7 @@ class UserController extends BaseController
                 $user->api_token = $api_token;
                 $user->save();
 //                $request->session()->
-                return $this->success(['msg' => 'login success']);
+                return $this->success(['msg' => 'login success', 'api_token' => $api_token]);
             } else {
                 return $this->fail($this->errCode['20001']);
             }
