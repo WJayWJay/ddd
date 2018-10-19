@@ -26,7 +26,10 @@ class UsersController extends Controller
         return view('home');
     }
 
-    
+    public function list($pae) {
+
+    }
+
 
     public function test(Request $request) {
         dd($request->session()->all());

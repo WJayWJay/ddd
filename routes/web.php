@@ -20,3 +20,14 @@ Route::get('/test', 'DataController@test');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('private/users', function () {
+    return App\User::paginate(5);
+});
+
+Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($router) {
+    $router->get('users/list', function ()    {
+        // 匹配 "/admin/users" URL
+        return App\User::paginate(5);
+    });
+});
