@@ -21,4 +21,15 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //
     ];
+
+    /**
+     * Determine if the HTTP request uses a ‘read’ verb.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function isReading($request)
+    {
+        return true;
+    }
 }

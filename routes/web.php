@@ -11,6 +11,9 @@
 |
 */
 
+$pageSize = 5;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,9 +28,25 @@ Route::get('private/users', function () {
     return App\User::paginate(5);
 });
 
-Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($router) {
-    $router->get('users/list', function ()    {
+
+
+Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($router, $pageSize) {
+    $router->get('users/list', function () use($pageSize) {
         // 匹配 "/admin/users" URL
-        return App\User::paginate(5);
+         return [
+             'code' => 0,
+             'data' => App\User::paginate($pageSize)->toArray()
+         ];
     });
+
+    Route::post('category/create', 'DataController@postCategory');
+
+    $router->get('category/list', function () use ($pageSize) {
+        return [
+            'code' => 0,
+            'data' => App\Model\Category::paginate(16)->toArray()
+        ];
+    });
+
+
 });

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-//use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Exception;
 use Illuminate\Http\Request;
 
-class LoginController extends LoginAttachController
+class LoginAttachController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -17,6 +19,8 @@ class LoginController extends LoginAttachController
     | to conveniently provide its functionality to your applications.
     |
     */
+
+    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
@@ -35,13 +39,6 @@ class LoginController extends LoginAttachController
         $this->middleware('guest')->except('logout');
     }
 
-    public function login(Request $request)
-    {
-        $valid = $this->checkNotValidated($request);
-        if ($valid) return $valid;
-        return parent::login($request);
-    }
-
     /**
      * The user has been authenticated.
      *
@@ -49,15 +46,12 @@ class LoginController extends LoginAttachController
      * @param  mixed  $user
      * @return mixed
      */
-    protected function authenticated(Request $request, $user)
-    {
-        //
-
-        return [
-            'code' => 0,
-            'data' => $user
-        ];
-    }
+//    protected function authenticated(Request $request, $user)
+//    {
+//        //
+//
+//        return $user;
+//    }
 
     /**
      * Validate the user login request.
@@ -67,23 +61,24 @@ class LoginController extends LoginAttachController
      */
     protected function validateLogin(Request $request)
     {
+        try {
+            parent::validateLogin($request);
+        } catch (Exception $exception) {
 
+        }
     }
 
     protected function checkNotValidated(Request $request) {
-        $validator = validator(
-            $request->all(),
+        $validator = validator($request->all(),
             [
                 $this->username() => 'required|string',
                 'password' => 'required|string'
-            ],
-            []);
+            ]
+            , []);
         if ($validator->fails()) {
-            $msgs = $validator->errors()->getMessages();
-
             return [
                 'code' => 400,
-                'msg' => '请输入正确的'.$this->getNameError().'或密码'
+                'msg' => $validator->errors()->getMessages()
             ];
         }
         return false;

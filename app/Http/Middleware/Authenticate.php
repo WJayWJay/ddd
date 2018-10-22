@@ -3,6 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
+use Exception;
+
 
 class Authenticate extends Middleware
 {
@@ -15,5 +18,18 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         return route('login');
+    }
+    public function handle($request, Closure $next, ...$guards)
+    {
+        try {
+            parent::handle($request, $next, ...$guards);
+        } catch (Exception $e) {
+            return response()->json([
+                'code' => -1,
+                'msg' => '你没有登录，请登录！'
+            ]);
+        }
+
+        return $next($request);
     }
 }
