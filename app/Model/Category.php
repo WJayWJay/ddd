@@ -16,7 +16,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'type', 'projectName', 'proAliasName', 'isUsedFor', 'uid'
+        'type', 'projectName', 'proAliasName', 'isUsedFor', 'uid', 'options'
     ];
 
     /**

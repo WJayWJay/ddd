@@ -20,6 +20,7 @@ class CreateCategoryTable extends Migration
             $table->string('projectName')->comment('类别名');
             $table->string('proAliasName')->comment('类别英文名,表单字段名');
             $table->string('isUsedFor')->comment('用于: 1, 提交资料中显示, 2,基本信息列表中显示, 3,作为基本信息筛选项');
+            $table->text('options')->comment('用做单选项');
             $table->timestamps();
         });
     }

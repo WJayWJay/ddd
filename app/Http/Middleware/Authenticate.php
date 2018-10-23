@@ -22,7 +22,7 @@ class Authenticate extends Middleware
     public function handle($request, Closure $next, ...$guards)
     {
         try {
-            parent::handle($request, $next, ...$guards);
+            $this->authenticate($request, $guards);
         } catch (Exception $e) {
             return response()->json([
                 'code' => -1,

@@ -35,12 +35,15 @@ class DataController extends Controller
 
     protected function create(array $data)
     {
+        var_dump('dddd');
+        $options = json_encode(array_key_exists('options', $data) ? $data['options'] : []);
         return Category::create([
             'type' => $data['type'],
             'projectName' => $data['projectName'],
             'proAliasName' => $data['proAliasName'],
             'isUsedFor' => $data['isUsedFor'],
-            'uid' => $this->guard()->id()
+            'uid' => $this->guard()->id(),
+            'options' => $options
         ]);
     }
 
@@ -63,7 +66,6 @@ class DataController extends Controller
 
     public function postCategory(Request $request)
     {
-
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
             $errors = $validator->errors()->first();
@@ -72,7 +74,6 @@ class DataController extends Controller
                 'msg' => $errors
             ]);
         }
-
         $category = $this->create($request->all());
 
         return $this->json([

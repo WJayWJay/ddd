@@ -39,7 +39,7 @@ Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($
          ];
     });
 
-    Route::post('category/create', 'DataController@postCategory');
+    $router->post('category/create', 'DataController@postCategory');
 
     $router->get('category/list', function () use ($pageSize) {
         return [
