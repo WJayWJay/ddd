@@ -34,4 +34,11 @@ class UsersController extends Controller
     public function test(Request $request) {
         dd($request->session()->all());
     }
+
+    public function info() {
+        return $this->json([
+            'code' => 0,
+            'data' => $this->guard()->user()
+        ]);
+    }
 }

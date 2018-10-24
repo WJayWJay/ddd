@@ -35,16 +35,20 @@ class DataController extends Controller
 
     protected function create(array $data)
     {
-        var_dump('dddd');
         $options = json_encode(array_key_exists('options', $data) ? $data['options'] : []);
-        return Category::create([
+
+        $categoryData = [
             'type' => $data['type'],
             'projectName' => $data['projectName'],
             'proAliasName' => $data['proAliasName'],
             'isUsedFor' => $data['isUsedFor'],
             'uid' => $this->guard()->id(),
             'options' => $options
-        ]);
+        ];
+        if (($id = $data['id'])) {
+            return Category::where('id', $id)->update($categoryData);
+        }
+        return Category::create($categoryData);
     }
 
     protected function validator(array $data)

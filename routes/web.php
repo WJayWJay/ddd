@@ -31,6 +31,8 @@ Route::get('private/users', function () {
 
 
 Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($router, $pageSize) {
+    $router->get('user/info', 'UsersController@info');
+
     $router->get('users/list', function () use($pageSize) {
         // 匹配 "/admin/users" URL
          return [

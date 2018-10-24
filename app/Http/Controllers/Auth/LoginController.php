@@ -37,6 +37,7 @@ class LoginController extends LoginAttachController
 
     public function login(Request $request)
     {
+        $this->guard()->logout();
         $valid = $this->checkNotValidated($request);
         if ($valid) return $valid;
         return parent::login($request);
