@@ -29,8 +29,15 @@ class DataController extends Controller
     }
 
     public function test(Request $request) {
-        dd($this->guard()->id());
-        dd($request->session()->all());
+//        dd($this->guard()->id());
+//        dd($request->session()->all());
+        $s = [1,2];
+        $d = [
+            explode('.', '1.2.3'),
+            explode('.', '1'),
+            explode('.', ''),
+        ];
+        dd($d);
     }
 
     protected function create(array $data)
@@ -41,13 +48,16 @@ class DataController extends Controller
             'type' => $data['type'],
             'projectName' => $data['projectName'],
             'proAliasName' => $data['proAliasName'],
-            'isUsedFor' => $data['isUsedFor'],
+            'submit' => $data['submit'],
+            'basic' => $data['basic'],
+            'filter' => $data['filter'],
             'uid' => $this->guard()->id(),
             'options' => $options
         ];
-        if (($id = $data['id'])) {
+        if (array_key_exists('id', $data) && ($id = $data['id'])) {
             return Category::where('id', $id)->update($categoryData);
         }
+
         return Category::create($categoryData);
     }
 
@@ -63,14 +73,20 @@ class DataController extends Controller
             'type' => 'required|integer|max:255',
             'projectName' => 'required|min:2|string|max:255',
             'proAliasName' => 'required|string|min:2|max:255',
-//            'aliasName' => 'required|string|max:255|unique:users',
             'isUsedFor' => 'required|string',
         ], $messages);
     }
 
     public function postCategory(Request $request)
     {
-        $validator = $this->validator($request->all());
+        $postData = $request->post();
+        if (!array_key_exists('isUsedFor', $postData)) {
+            return $this->json([
+                'code' => 400,
+                'data' => '缺少isUsedFor 字段',
+            ]);
+        }
+        $validator = $this->validator($postData);
         if ($validator->fails()) {
             $errors = $validator->errors()->first();
             return response()->json([
@@ -78,12 +94,51 @@ class DataController extends Controller
                 'msg' => $errors
             ]);
         }
-        $category = $this->create($request->all());
+        $isUsedFor = $postData['isUsedFor'];
+        $postData['submit'] = substr_count($isUsedFor, '1') > 0 ? 1:0;
+        $postData['basic'] = substr_count($isUsedFor, '2') > 0 ? 1:0;
+        $postData['filter'] = substr_count($isUsedFor, '3') > 0 ? 1:0;
+        $category = $this->create($postData);
 
         return $this->json([
             'code' => 0,
             'data' => $category,
         ]);
 
+    }
+
+    public function deleteCategory(Request $request)
+    {
+
+        $id = $request->post('id');
+        if (!$id) {
+            return response()->json([
+                'code' => 400,
+                'msg' => 'no id'
+            ]);
+        }
+        $category = Category::where('id', $id)->delete();
+
+        return $this->json([
+            'code' => 0,
+            'data' => $category,
+        ]);
+
+    }
+    public function queryCategory(Request $request)
+    {
+        $q = ['submit' => 1, 'filter' => 1, 'basic' => 1];
+        $all = $request->all();
+        $data = [];
+        foreach ($all as $key => $value) {
+            if (array_key_exists($key, $q)) {
+                $data[$key] = intval($value);
+            }
+        }
+
+        return $this->json([
+            'code' => 0,
+            'data' => Category::where($data)->limit(50)->get()
+        ]);
     }
 }

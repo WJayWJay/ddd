@@ -42,6 +42,7 @@ Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($
     });
 
     $router->post('category/create', 'DataController@postCategory');
+    $router->post('category/delete', 'DataController@deleteCategory');
 
     $router->get('category/list', function () use ($pageSize) {
         return [
@@ -49,6 +50,10 @@ Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($
             'data' => App\Model\Category::paginate(16)->toArray()
         ];
     });
+
+
+    $router->get('category/query', 'DataController@queryCategory');
+
 
 
 });

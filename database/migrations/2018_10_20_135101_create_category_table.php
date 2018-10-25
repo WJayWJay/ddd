@@ -19,7 +19,9 @@ class CreateCategoryTable extends Migration
             $table->integer('uid')->comment('谁添加的');
             $table->string('projectName')->comment('类别名');
             $table->string('proAliasName')->comment('类别英文名,表单字段名');
-            $table->string('isUsedFor')->comment('用于: 1, 提交资料中显示, 2,基本信息列表中显示, 3,作为基本信息筛选项');
+            $table->integer('submit')->comment('1提交资料中显示， 1 显示 0, 不显示');
+            $table->integer('basic')->comment('2基本信息列表中显示， 1 显示 0, 不显示');
+            $table->integer('filter')->comment('3作为基本信息筛选项， 1 显示 0, 不显示');
             $table->text('options')->comment('用做单选项');
             $table->timestamps();
         });

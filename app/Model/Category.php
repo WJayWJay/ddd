@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Category extends Model
 {
-    use Notifiable;
+//    use Notifiable;
 
     protected $table = 'category';
     /**
@@ -16,7 +16,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'type', 'projectName', 'proAliasName', 'isUsedFor', 'uid', 'options'
+        'type','uid', 'projectName', 'proAliasName', 'submit', 'basic', 'filter',  'options'
     ];
 
     /**
