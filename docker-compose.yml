@@ -3,7 +3,7 @@ services:
   php_app:
     build: ./
     volumes:
-      - ./:/usr/src/myapp
+      - ./:/usr/share/nginx/html/api
     depends_on: 
       - database
   web:
@@ -13,7 +13,7 @@ services:
     ports: 
       - 8899:80
     volumes:
-      - ./:/usr/src/myapp
+      # - ./:/usr/share/nginx/html/api:rw
       - ./default.conf:/etc/nginx/conf.d/default.conf
     environment:
     # - NGINX_HOST=foobar.com
