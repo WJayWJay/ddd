@@ -40,6 +40,9 @@ Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($
              'data' => App\User::paginate($pageSize)->toArray()
          ];
     });
+    $router->post('users/create', 'UsersController@createUser');
+    $router->post('users/active', 'UsersController@activeAccount');
+    $router->post('users/resetSelfPwd', 'UsersController@resetSelfPwd');
 
     $router->post('category/create', 'DataController@postCategory');
     $router->post('category/delete', 'DataController@deleteCategory');
@@ -53,6 +56,14 @@ Route::group(['prefix' => 'private', 'middleware' => 'auth'], function () use ($
 
 
     $router->get('category/query', 'DataController@queryCategory');
+
+//    baseinfo
+    $router->post('avatar/upload', 'BasicInfoController@upload');
+    $router->post('baseinfo/save', 'BasicInfoController@saveInfo');
+    $router->post('/basicinfo/delete', 'BasicInfoController@deleteInfo');
+
+    $router->get('basicinfo/list', 'BasicInfoController@queryBasicInfo');
+
 
 
 

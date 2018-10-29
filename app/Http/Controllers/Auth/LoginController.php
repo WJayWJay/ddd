@@ -116,4 +116,22 @@ class LoginController extends LoginAttachController
             'email' => '邮箱'
         ][$this->username()];
     }
+
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(Request $request)
+    {
+        //
+        return $this->json([
+            'code' => 0,
+            'msg' => '退出成功',
+            'data' => [
+                'msg' => '退出成功'
+            ]
+        ]);
+    }
 }
