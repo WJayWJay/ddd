@@ -51,6 +51,7 @@ class DataController extends Controller
             'submit' => $data['submit'],
             'basic' => $data['basic'],
             'filter' => $data['filter'],
+            'cardList' => $data['cardList'],
             'uid' => $this->guard()->id(),
             'options' => $options
         ];
@@ -72,7 +73,7 @@ class DataController extends Controller
         return Validator::make($data, [
             'type' => 'required|integer|max:255',
             'projectName' => 'required|min:2|string|max:255',
-            'proAliasName' => 'required|string|min:2|max:255',
+            'proAliasName' => array_key_exists('id', $data) ? 'required|string|min:2|max:255' : 'required|string|min:2|max:255|unique:category',
             'isUsedFor' => 'required|string',
         ], $messages);
     }
@@ -98,6 +99,7 @@ class DataController extends Controller
         $postData['submit'] = substr_count($isUsedFor, '1') > 0 ? 1:0;
         $postData['basic'] = substr_count($isUsedFor, '2') > 0 ? 1:0;
         $postData['filter'] = substr_count($isUsedFor, '3') > 0 ? 1:0;
+        $postData['cardList'] = substr_count($isUsedFor, '4') > 0 ? 1:0;
         $category = $this->create($postData);
 
         return $this->json([
@@ -138,7 +140,41 @@ class DataController extends Controller
 
         return $this->json([
             'code' => 0,
-            'data' => Category::where($data)->limit(50)->get()
+            'data' => Category::where($data)->orderBy('sortId', 'desc')->limit(80)->get()
+        ]);
+    }
+
+    public function moveOneStep(Request $request) {
+        $id = $request->post('id');
+        if (!$id) {
+            return $this->wjson(400, '', '请求无效');
+        }
+        $type = $request->post('type');
+        if (!$type) {
+            return $this->wjson(400, '', '请求无效');
+        }
+        if ($type == 1) {
+            $cat = Category::where(['id' => $id])->increment('sortId');
+        } else {
+            $cat = Category::where(['id' => $id])->decrement('sortId');
+        }
+        if (!$cat) {
+            return $this->wjson(400, '', '请求无效');
+        }
+        return $this->wjson(0, ['msg' => '移动成功'], '请求无效');
+    }
+
+    public function getFilterCat(Request $request) {
+        $catModel = new Category();
+
+        $filters = $catModel->getFilter();
+//        $cardList = $catModel->getCardList();
+//        $basicList = $catModel->getBasicList();
+
+        return $this->wjson(0, [
+            'filters' => $filters,
+//            'basicList' => $basicList,
+//            'cardList' => $cardList
         ]);
     }
 }

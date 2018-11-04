@@ -16,7 +16,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'type','uid', 'projectName', 'proAliasName', 'submit', 'basic', 'filter',  'options'
+        'type','uid', 'projectName', 'proAliasName', 'submit', 'basic', 'filter', 'cardList', 'options'
     ];
 
     /**
@@ -27,4 +27,23 @@ class Category extends Model
 //    protected $hidden = [
 //        'password', 'remember_token',
 //    ];
+
+    public function getSubmit() {
+        $query = ['submit' => 1];
+        return $this->where($query)->orderBy('sortId', 'desc')->get()->toArray();
+    }
+
+    public function getFilter() {
+        $query = ['filter' => 1];
+        return $this->where($query)->orderBy('sortId', 'desc')->get()->toArray();
+    }
+
+    public function getCardList() {
+        $query = ['cardList' => 1];
+        return $this->where($query)->orderBy('sortId', 'desc')->get()->toArray();
+    }
+    public function getBasicList() {
+        $query = ['basic' => 1];
+        return $this->where($query)->orderBy('sortId', 'desc')->get()->toArray();
+    }
 }

@@ -17,6 +17,7 @@ class CreateRoleTable extends Migration
             $table->increments('id');
             $table->integer('uid')->unique()->comment('用户id');
             $table->integer('type')->default(2)->comment('1 admin, 2 普通用户');
+            $table->integer('cid')->comment('操作(添加)人的user id');
             $table->timestamps();
         });
     }

@@ -43,6 +43,11 @@ class LoginController extends LoginAttachController
         return parent::login($request);
     }
 
+    public function username()
+    {
+        return 'email';
+    }
+
     /**
      * The user has been authenticated.
      *
@@ -53,6 +58,12 @@ class LoginController extends LoginAttachController
     protected function authenticated(Request $request, $user)
     {
         //
+
+        $isActived = $user->isActived;
+        $id = $user->id;
+        if ($isActived != 1 && $id !== 1) {
+            return $this->wjson(400, '', '您的账户未激活, 请激活后使用!');
+        }
 
         return [
             'code' => 0,

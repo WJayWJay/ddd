@@ -21,4 +21,17 @@ class Controller extends BaseController
     protected function json ($data) {
         return response()->json($data);
     }
+
+    protected function user() {
+        return $this->guard()->user();
+    }
+
+    protected function wjson($code, $data = '', $msg = null) {
+
+        return $this->json([
+            'code' => $code,
+            'msg' => $msg,
+            'data' => $data
+        ]);
+    }
 }

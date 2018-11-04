@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Role;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class UsersController extends Controller
 {
@@ -28,19 +31,30 @@ class UsersController extends Controller
         return view('home');
     }
 
-    public function list($pae) {
+    public function list(Request $request) {
 
+        $users = User::paginate(10)->toArray();
+        $data = $users['data'];
+        foreach ($data as $key => &$value) {
+            $role = Role::where(array('uid' => $value['id']))->first();
+            $value['role'] = $role;
+        }
+        $users['data'] = $data;
+
+        return $this->pjson(0, $users);
     }
 
 
     public function test(Request $request) {
-        dd($request->session()->all());
+//        dd($request->session()->all());
     }
 
     public function info() {
+        $user = $this->guard()->user();
+        $type = $user->role->type;
         return $this->json([
             'code' => 0,
-            'data' => $this->guard()->user()
+            'data' => array_merge($user->toArray(), ['type' => $type])
         ]);
     }
 
@@ -182,5 +196,55 @@ class UsersController extends Controller
         } else {
             return $this->pjson(400, '', '更新失败');
         }
+    }
+
+    public function setAdmin(Request $request) {
+        $data = $request->post();
+        if (!array_key_exists('id', $data) || !array_key_exists('type', $data) || !in_array(intval($data['type']), [1, 2])) {
+            return $this->pjson(400, '', '参数错误');
+        }
+        $id = $data['id'];
+        $type = $data['type'] == 1 ? 1 : 2;
+        $role = Role::where(['uid' => $id])->first();
+        $user = $this->user();
+        $cid = $user->id;
+
+        $currentRole = Role::where(['uid' => $cid])->first();
+        if ($id == 1 && $cid === 1) {
+
+        } else {
+            if ($currentRole) {
+                $currentUserType = $currentRole->type;
+                if ($currentUserType !== 1) {
+                    return $this->wjson(400, '', '您没有权限操作!');
+                }
+            } else {
+                return $this->wjson(400, '', '您没有权限操作!');
+            }
+        }
+
+        if ($role) {
+            $role->type = $type;
+            $role->cid = $cid;
+            $res = $role->save();
+            if ($res) {
+                return $this->pjson(0, ['msg' => '设置成功']);
+            } else {
+                return $this->pjson(400,'', '设置失败!');
+            }
+        } else {
+            $res = Role::create([
+                'uid' => $id,
+                'type' => $type,
+                'cid' => $cid
+            ]);
+
+            if ($res) {
+                return $this->pjson(0, ['msg' => '设置成功']);
+            } else {
+                return $this->pjson(400,'', '设置失败!');
+            }
+        }
+
     }
 }

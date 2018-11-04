@@ -20,9 +20,11 @@ class CreateCategoryTable extends Migration
             $table->string('projectName')->comment('类别名');
             $table->string('proAliasName')->comment('类别英文名,表单字段名');
             $table->integer('submit')->comment('1提交资料中显示， 1 显示 0, 不显示');
-            $table->integer('basic')->comment('2基本信息列表中显示， 1 显示 0, 不显示');
-            $table->integer('filter')->comment('3作为基本信息筛选项， 1 显示 0, 不显示');
+            $table->integer('basic')->comment('2基本信息列表中显示， 1 显示 0, 不显示')->default(0);
+            $table->integer('filter')->comment('3作为基本信息筛选项， 1 显示 0, 不显示')->default(0);
+            $table->integer('cardList')->comment('4作为卡片列表筛选项， 1 显示 0, 不显示')->default(0);
             $table->text('options')->comment('用做单选项');
+            $table->integer('sortId')->default(0)->comment('排序id');
             $table->timestamps();
         });
     }
